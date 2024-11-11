@@ -1,18 +1,15 @@
-# Eclipse
-.settings/
+target/*
+.settings/*
 .classpath
 .project
-bin/
-
-# IntelliJ IDEA
 .idea
 *.iml
+/target
 
-# VS Code
-.vscode
+generated/
 
-# Maven
-target/
+# Easier branch switching
+springboot-petclinic-client/
+springboot-petclinic-server/
 
-# OS
 .DS_Store

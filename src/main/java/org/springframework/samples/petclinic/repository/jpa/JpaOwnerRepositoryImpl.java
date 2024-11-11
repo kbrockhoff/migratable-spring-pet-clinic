@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2022 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@ package org.springframework.samples.petclinic.repository.jpa;
 
 import java.util.Collection;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate5.support.OpenSessionInViewFilter;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.repository.OwnerRepository;
@@ -33,9 +35,10 @@ import org.springframework.stereotype.Repository;
  * @author Rod Johnson
  * @author Sam Brannen
  * @author Michael Isvy
- * @since 22.4.2006
+ * @author Vitaliy Fedoriv
  */
 @Repository
+@Profile("jpa")
 public class JpaOwnerRepositoryImpl implements OwnerRepository {
 
     @PersistenceContext
@@ -77,5 +80,17 @@ public class JpaOwnerRepositoryImpl implements OwnerRepository {
         }
 
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<Owner> findAll() throws DataAccessException {
+		Query query = this.em.createQuery("SELECT owner FROM Owner owner");
+        return query.getResultList();
+	}
+
+	@Override
+	public void delete(Owner owner) throws DataAccessException {
+		this.em.remove(this.em.contains(owner) ? owner : this.em.merge(owner));
+	}
 
 }

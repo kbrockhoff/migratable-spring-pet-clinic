@@ -5,11 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Locale;
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -21,17 +19,10 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  */
 class ValidatorTests {
 
-    private LocalValidatorFactoryBean localValidatorFactoryBean;
-
-    @BeforeEach
-    void setUp() {
-        localValidatorFactoryBean = new LocalValidatorFactoryBean();
+    private Validator createValidator() {
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
         localValidatorFactoryBean.afterPropertiesSet();
-    }
-
-    @AfterEach
-    void tearDown() {
-        localValidatorFactoryBean.close();
+        return localValidatorFactoryBean;
     }
 
     @Test
@@ -45,14 +36,10 @@ class ValidatorTests {
         Validator validator = createValidator();
         Set<ConstraintViolation<Person>> constraintViolations = validator.validate(person);
 
-        assertThat(constraintViolations).hasSize(1);
+        assertThat(constraintViolations.size()).isEqualTo(1);
         ConstraintViolation<Person> violation = constraintViolations.iterator().next();
-        assertThat(violation.getPropertyPath()).hasToString("firstName");
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("firstName");
         assertThat(violation.getMessage()).isEqualTo("must not be empty");
-    }
-
-    private Validator createValidator() {
-        return localValidatorFactoryBean.getValidator();
     }
 
 }
