@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2022 the original author or authors.
+ * Copyright 2002-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.springframework.samples.petclinic.repository.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.Date;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -25,14 +25,15 @@ import org.springframework.jdbc.core.RowMapper;
  * {@link RowMapper} implementation mapping data from a {@link ResultSet} to the corresponding properties
  * of the {@link JdbcPet} class.
  */
-class JdbcPetRowMapper implements RowMapper<JdbcPet> {
+public class JdbcPetRowMapper implements RowMapper<JdbcPet> {
 
     @Override
     public JdbcPet mapRow(ResultSet rs, int rownum) throws SQLException {
         JdbcPet pet = new JdbcPet();
-        pet.setId(rs.getInt("pets.id"));
+        pet.setId(rs.getInt("pets_id"));
         pet.setName(rs.getString("name"));
-        pet.setBirthDate(rs.getObject("birth_date", LocalDate.class));
+        Date birthDate = rs.getDate("birth_date");
+        pet.setBirthDate(new Date(birthDate.getTime()));
         pet.setTypeId(rs.getInt("type_id"));
         pet.setOwnerId(rs.getInt("owner_id"));
         return pet;

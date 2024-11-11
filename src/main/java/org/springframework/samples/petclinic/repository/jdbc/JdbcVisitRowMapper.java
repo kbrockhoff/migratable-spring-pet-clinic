@@ -21,7 +21,7 @@ import org.springframework.samples.petclinic.model.Visit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * {@link RowMapper} implementation mapping data from a {@link ResultSet} to the corresponding properties
@@ -33,7 +33,8 @@ class JdbcVisitRowMapper implements RowMapper<Visit> {
     public Visit mapRow(ResultSet rs, int row) throws SQLException {
         Visit visit = new Visit();
         visit.setId(rs.getInt("visit_id"));
-        visit.setDate(rs.getObject("visit_date", LocalDate.class));
+        Date visitDate = rs.getDate("visit_date");
+        visit.setDate(new Date(visitDate.getTime()));
         visit.setDescription(rs.getString("description"));
         return visit;
     }

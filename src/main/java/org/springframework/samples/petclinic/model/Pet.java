@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2022 the original author or authors.
+ * Copyright 2002-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,33 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.rest.JacksonCustomPetDeserializer;
+import org.springframework.samples.petclinic.rest.JacksonCustomPetSerializer;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Simple business object representing a pet.
@@ -44,11 +52,14 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "pets")
+@JsonSerialize(using = JacksonCustomPetSerializer.class)
+@JsonDeserialize(using = JacksonCustomPetDeserializer.class)
 public class Pet extends NamedEntity {
 
     @Column(name = "birth_date")
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private LocalDate birthDate;
+    private Date birthDate;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
@@ -62,11 +73,11 @@ public class Pet extends NamedEntity {
     private Set<Visit> visits;
 
 
-    public void setBirthDate(LocalDate birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
-    public LocalDate getBirthDate() {
+    public Date getBirthDate() {
         return this.birthDate;
     }
 
@@ -82,10 +93,10 @@ public class Pet extends NamedEntity {
         return this.owner;
     }
 
-    protected void setOwner(Owner owner) {
+    public void setOwner(Owner owner) {
         this.owner = owner;
     }
-
+    @JsonIgnore
     protected Set<Visit> getVisitsInternal() {
         if (this.visits == null) {
             this.visits = new HashSet<>();

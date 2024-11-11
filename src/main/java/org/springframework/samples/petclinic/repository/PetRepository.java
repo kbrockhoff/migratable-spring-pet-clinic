@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2022 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
  */
 package org.springframework.samples.petclinic.repository;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -29,6 +31,7 @@ import org.springframework.samples.petclinic.model.PetType;
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @author Michael Isvy
+ * @author Vitaliy Fedoriv
  */
 public interface PetRepository {
 
@@ -37,7 +40,7 @@ public interface PetRepository {
      *
      * @return a <code>Collection</code> of <code>PetType</code>s
      */
-    List<PetType> findPetTypes();
+    List<PetType> findPetTypes() throws DataAccessException;
 
     /**
      * Retrieve a <code>Pet</code> from the data store by id.
@@ -46,7 +49,7 @@ public interface PetRepository {
      * @return the <code>Pet</code> if found
      * @throws org.springframework.dao.DataRetrievalFailureException if not found
      */
-    Pet findById(int id);
+    Pet findById(int id) throws DataAccessException;
 
     /**
      * Save a <code>Pet</code> to the data store, either inserting or updating it.
@@ -54,6 +57,22 @@ public interface PetRepository {
      * @param pet the <code>Pet</code> to save
      * @see BaseEntity#isNew
      */
-    void save(Pet pet);
+    void save(Pet pet) throws DataAccessException;
+    
+    /**
+     * Retrieve <code>Pet</code>s from the data store, returning all owners 
+     *
+     * @return a <code>Collection</code> of <code>Pet</code>s (or an empty <code>Collection</code> if none
+     * found)
+     */
+	Collection<Pet> findAll() throws DataAccessException;
+
+    /**
+     * Delete an <code>Pet</code> to the data store by <code>Pet</code>.
+     *
+     * @param pet the <code>Pet</code> to delete
+     * 
+     */
+	void delete(Pet pet) throws DataAccessException;
 
 }
