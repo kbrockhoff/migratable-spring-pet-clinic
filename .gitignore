@@ -1,18 +1,17 @@
+# Maven
+target/
+
 # Eclipse
 .settings/
 .classpath
 .project
-bin/
 
 # IntelliJ IDEA
 .idea
 *.iml
 
-# VS Code
-.vscode
+# Branch switching
+generated/
 
-# Maven
-target/
-
-# OS
 .DS_Store
+
