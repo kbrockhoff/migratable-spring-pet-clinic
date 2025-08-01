@@ -2,9 +2,9 @@ name: Java CI
 
 on:
   push:
-    branches: [ spring-boot-1.5.2-java-8, feature/*, bugfix/*, release/* ]
+    branches: [ spring-4.3-java-6 ]
   pull_request:
-    branches: [ spring-boot-1.5.2-java-8 ]
+    branches: [ spring-4.3-java-6 ]
 
 permissions:
   contents: read
